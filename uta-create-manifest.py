@@ -19,7 +19,7 @@ CLD_TYPE = 'upload'
 ELEMENT_NAME = 'image'
 DOMAIN_NAME='res.cloudinary.com'
 CLOUD_NAME='<< cloudinary sub-account name>>'
-#CONTENT_TYPE="musician"
+CONTENT_TYPE="musician"
 ROOT_FOLDER="Talent Headshots-Approved"
 DEPARTMENT="Music"
 SUFFIX="-headshot"
@@ -35,7 +35,7 @@ def get_entries(limit, skip):
 # get details of a single entry
 def get_single_entry(entry_id):
     url = f"https://cdn.contentful.com/spaces/{SPACE_ID}/environments/master/entries/{entry_id}?access_token={API_KEY}"
-    print(url)
+    #print(url)
     response = requests.get("GET", url)
     return response.json()
 
@@ -46,7 +46,7 @@ def get_image(image_id):
     return response.json()
 
 # find the embedded image references within each entry
-def get_image_references():
+def get_image_references():    
     total = get_entries(1,skip=0)['total']
     print(f"Checking a total of {total} entries")
     #total = 10
@@ -63,10 +63,11 @@ def get_image_references():
         for entry in entries['items']:  
             fields = entry['fields']
             #print(json.dumps(fields, indent=2))
-            if fields.get('image'):
+            if fields.get('image'):                
                 image_id = fields['image']['sys']['id']
                 #print(image_id)
                 current_images.add(image_id)
+                #print(fields)
                 if image_id in images:
                     print(f'Duplicate detected for the image: {image_id}. It is used on assets with ids {images[image_id]}')
                 else:
@@ -74,7 +75,7 @@ def get_image_references():
                         'entryId': entry['sys']['id'], 
                         'name': fields['name'],
                         'slug': fields.get('slug') or 'MISSING',
-                        'mongoId': fields.get('masterDb') or '-1'
+                        'mongoId': fields.get('masterDB') or '-1'
                     }
     #print(f"Published images = {published_entry}\nunpublished images = {unpublished_entry}")
     return images
